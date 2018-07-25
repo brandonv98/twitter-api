@@ -1,0 +1,20 @@
+{
+  "name": "twitter-api-node",
+  "version": "1.0.0",
+  "description": "Twinnter api developed with nodeJS & JS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "twitter",
+    "api",
+    "nodejs",
+    "javascript"
+  ],
+  "author": "Brandon VanCamp",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
