@@ -9,7 +9,7 @@ let config = require('../config.js');
 config = config.config;
 const app = express();
 
-// app.set('view engine', 'pug');
+app.set('view engine', 'pug');
 // app.use(express.static(
   // 'public'
 // ));
