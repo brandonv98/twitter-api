@@ -8,6 +8,10 @@ let config = require('../config.js');
 // ---------        --------- //
 config = config.config;
 const app = express();
+// Twiter Api keys
+const  T = new Twit(
+    config
+  );
 
 app.set('view engine', 'pug');
 app.use(express.static(
@@ -15,33 +19,25 @@ app.use(express.static(
 ));
 
 app.get('/', (req, res) => {
-  res.render('index');
+  // Store reusable data.
+  const data = {
+
+  };
+///  Get user's time line and display the 2 most recent tweets.   /// 
+    T.get('statuses/user_timeline', { count: 2 }, function(err, data, response) {
+      data.timeline = data;
+     console.log(data.timeline);
+     return res.render('index', {userTimeline: data.timeline[0].text, userTimelineNext: data.timeline[1].text});
+  });
 });
 
 
-
+// Initiate server .... 
 app.listen(3000, () => {
 console.log('The application is running on localhost:3000!')
 });
 
 
-
-
-// Twiter Api keys
-// const  T = new Twit(
-    // config
-  // );
-
-// app.use('/', routes);
-
-// const router = express.Router();
-
-// catch 404 and forward to error handler
-// app.use((req, res, next) => {
-//   const err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
 
 
 
