@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./js/app.js"
+    "start": "nodemon ./app.js"
   },
   "keywords": [
     "twitter",
@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "pug": "^2.0.3",
     "twit": "^2.2.11"
