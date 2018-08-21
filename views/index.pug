@@ -47,7 +47,10 @@ block main
             h2 Direct Messages
       .grid-33
         .app--section
-          ul.app--tweet--list
+          //- block tweet
+          
+          include timelineTweets
+          //- ul.app--tweet--list
             li
               strong.app--tweet--timestamp 4h
               a.app--tweet--author
@@ -85,7 +88,8 @@ block main
                       path.st0(d='M25.8,0c-3.6,0-6.8,2.1-8.3,5.1C16,2.1,12.9,0,9.2,0C4.1,0,0,4.1,0,9.2C0,21.4,17.3,28,17.3,28S35,21.3,35,9.2\
                       C35,4.1,30.9,0,25.8,0L25.8,0z')
                     strong 12
-      .grid-33
+      include following
+      //- .grid-33
         .app--section
           ul.app--user--list
             li
@@ -94,7 +98,7 @@ block main
                   a.app--tweet--author
                     .app--avatar(style='background-image: url(images/f-spore.png)')
                       img(src='images/f-spore.png')
-                    h4 Jill Spore
+                    h4=friendName
                     p @jillspore
                 .circle--fluid--cell
                   a.button.button-text Unfollow

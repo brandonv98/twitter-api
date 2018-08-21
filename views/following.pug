@@ -1,0 +1,22 @@
+block head
+ .grid-33
+        .app--section
+          ul.app--user--list
+           each val, i in friend.name
+            li
+              .circle--fluid
+                .circle--fluid--cell.circle--fluid--primary
+                  a.app--tweet--author
+                    .app--avatar(style=`background-image: url(${friendPhoto[i]})`)
+                      img(src=`${friendPhoto[i]}`)
+                    h4= val
+                    p=`@${friendSN[i]}`
+                  //- each i in val
+                
+                if isFollowing[i]
+                 .circle--fluid--cell
+                  a.button.button-text=`Unfollow`
+                else 
+                 .circle--fluid--cell
+                  a.button=`Follow`
+block directMessage

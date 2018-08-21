@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Twit = require('twit');
 
-let config = require('./config.js');
+let config = require('../config.js');
 // ---------        --------- //
 config = config.config;
 
@@ -12,35 +12,102 @@ const  T = new Twit(
     config
   );
 
-  // Twitter \\
-router.get('/', (req, res) => {
-    res.redirect(`/cards/${generateRandomCard}`);
-  });
-
-  
-
-router.get('/', (req, res) => {
+  // Twitter \\  
+router.use((req, res, next) => {
+    let arrOuter;
     // Store reusable data.
-    const data = {
-    };
-  
-  ///  Get user's time line, display the 2 most recent tweets.   /// 
+    // const data = {
+
+    // };  
+   
+
+
+
+//   /  Get user's time line, display the 2 most recent tweets.   ///   
       T.get('statuses/user_timeline', { count: 2 }, function(err, data, response) {
-        data.timeline = data;
-        data.userName = data[0].user.name;
-        data.sn = data[0].user.screen_name;
-        data.userPhoto = data[0].user.profile_image_url;
-       console.log(data.timeline);
-       // Render out our passed date to page.
-       return res.render('index', {
-         userTimeline: data.timeline[0].text, 
-         userTimelineNext: data.timeline[1].text, 
-         userName: data.userName, 
-         userPhoto: data.userPhoto,
-         sn: data.sn
-        });
+        req.timeline = data;
+        req.userName = data[0].user.name;
+        req.sn = data[0].user.screen_name;
+        req.userPhoto = data[0].user.profile_image_url;
+        req.message = data.timeline;
+        // req.data = data;
+
+        // console.log(data.timeline);
+        // console.log(data.friendName);
+        // if (!arrOuter) {
+        //     console.log(arrOuter);
+        // }  else {
+        //     setTimeout(1000, e => {
+        //         console.log(arrOuter);
+        //     });
+        // }
+        
+      
+
+        // res.render('sandbox', { name: ['Jack', 'Bill']});
+
+        // res.render('index', {
+            // friendName: 'arr[1]'
+        // });
+        next();
+    });
+  }, (req, res, next) => {
+    T.get('followers/list', { screen_name: 'brandondvancamp' },  function (err, data, response) {
+        let username = data.users;
+        const friendData = {};
+        let names = [];
+        let isFollowing = [];
+        req.friendSN = [];
+        req.friendPhoto = [];
+
+        console.log(data);
+        for (let i = 0; i < username.length; i++) {
+            let name = username[i];
+            names.push(name.name);
+            isFollowing.push(name.following);
+            // req.isFollowing = username.following;
+            req.friendSN.push(name.screen_name); 
+            req.friendPhoto.push(name.profile_image_url_https); 
+        }
+        req.following = names;
+        // req.followers = data;
+        req.isFollowing = isFollowing;
+        next();
     });
   });
+
+    router.get('/', (req, res, next) => {
+        //  Render out our passed date to page.
+        console.log(req.friendPhoto, 'message recived...');
+        
+        res.render('index', {
+            timelineContent: req.timeline.map(item => {
+                return item.text;
+            }),
+            userTimelineNext: req.timeline[1].text, 
+            userName: req.userName, 
+            userPhoto: req.userPhoto,
+            sn: req.sn,
+            friendName: req.following,
+            friend: {
+                name: req.following, 
+                isFollowing: req.isFollowing.map(item => {
+                    return item;
+                }),
+            },
+            friendPhoto: req.friendPhoto,
+            friendSN: req.friendSN,
+            isFollowing: req.isFollowing,
+            // .map(item => {
+                // console.log(item);
+                // return item.toString();
+            // }),
+            // isFollowing: req.isFollowing,
+            
+            
+            
+        });
+    });
 
 
 
@@ -190,18 +257,6 @@ router.get('/', (req, res) => {
 //     console.log(tweet)
 //   })
 
-// // Make a request for a user with a given ID
-// // axios.get(`https://api.twitter.com/oauth/${config.access_token}`)
-// //   .then(function (response) {
-// //     // handle success
-// //     console.log(response);
-// //   })
-// //   .catch(function (error) {
-// //     // handle error
-// //     console.log(error);
-// //   })
-// //   .then(function () {
-// //     // always executed
-// //   });
+
 
 module.exports = router;
