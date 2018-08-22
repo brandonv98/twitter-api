@@ -15,16 +15,10 @@ app.use(express.static(
 ));
 
 // Import routes \\
-const mainRoutes = require('./routes');
 const twitterRoutes = require('./routes/twitter');
-const sandbox = require('./routes/sandbox');
 
 // Use imported routes // 
-// app.use(mainRoutes);
 app.use('/', twitterRoutes);
-// app.use('/sandbox', sandbox);
-
-
 
 // Handle ERRORs
 app.use((req, res, next) => {
