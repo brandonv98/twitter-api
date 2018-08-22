@@ -6,3 +6,5 @@ node_modules
 
 #config.js - api keys && tokens
 config.js
+index.js
+sandbox.js
