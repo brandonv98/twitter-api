@@ -20,7 +20,6 @@ const getTime = timeStamp => {
     const mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     const dateNow = new Date();
     const dateCreated = new Date(timeStamp);
-    // console.log(timeStamp, dateCreated);
     if (typeof timeStamp === "string") {
         if (dateNow.getUTCMonth()+1 > dateCreated.getUTCMonth()) {
             if (dateNow.getUTCMonth()+1 === dateCreated.getUTCMonth()+1) {
@@ -186,12 +185,5 @@ router.post('/post', (req, res) => {
            }
         });
     });
-
-
-
-
-
 // ========================================================================
-
-
 module.exports = router;
