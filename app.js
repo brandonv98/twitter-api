@@ -1,10 +1,11 @@
-// const axios = require('axios');
+// TODO:  1. Add posting functionality, Create readme.md file, commit changes.
 //-----  NOTE: -----// 
 //     Install / Load node modules.... // 
 const express = require('express');
 
 // ---------        --------- //
 const app = express();
+
 
 // Install temlating // 
 app.set('view engine', 'pug');
@@ -28,15 +29,16 @@ app.use('/', twitterRoutes);
 // Handle ERRORs
 app.use((req, res, next) => {
   const err = new Error('Not Found');
-  err.status = 404;
+  err.code = 404;
   next(err);
 });
 
 // ERROR - HACK: // Handle our error routes.
 app.use((err, req, res, next) => {
   res.locals.error = err;
-  res.status(err.status);
-  res.render('error', err);
+  res.status(err.code);
+  console.log(err, 'Break',  err.code);
+  res.render('error', {err});
 });
 
 // Initiate server .... 

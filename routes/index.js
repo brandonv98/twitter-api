@@ -10,23 +10,16 @@ const  T = new Twit(
   );
 
 // GET pages content
-router.get('/c', (req, res) => {
-  let arrOuter;
-   //   //  get the list of user id's that follow @brandonvancamp
-T.get('followers/list', { screen_name: 'brandonvancamp' },  function (err, data, response) {
-  let userList = data.users;
-  const arr = [];
-  for (let i = 0; i < userList.length; i++) {
-      let name = userList[i].name;
-      arr.push(name);
-  }
-  arrOuter = arr;
-  console.log(arrOuter);
-  res.render('following', { friendName: arrOuter});// // NOTE: read cookie set from post.
-});
+// router.use('/post', (req, res, next) => {
+//  tweet 'hello world!'
+
+
+  // T.post('statuses/update', { status: 'ApI\'s are awsome!!' }, function(err, data, response) {
+  //   console.log(data)
+  //   });
      
   // }
-});
+// });
 
   
 module.exports = router;

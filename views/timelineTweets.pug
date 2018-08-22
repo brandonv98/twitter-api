@@ -1,8 +1,8 @@
 block tweet
         ul.app--tweet--list
-         each val in timelineContent
+         each val, i in timelineContent
             li
-              strong.app--tweet--timestamp 4h
+              strong.app--tweet--timestamp=createdAt[i]
               a.app--tweet--author
                 .app--avatar(style=`background-image: url(${userPhoto})`)
                   img(src=`${userPhoto}`)
@@ -11,7 +11,6 @@ block tweet
                 p=`@${sn}`
               p= val
               //- p=userTimelineNext
-              //- It's time I come clean about a few things: The pretzel is my favorite chip.
               ul.app--tweet--actions.circle--list--inline
                 li
                   a.app--reply

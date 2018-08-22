@@ -1,5 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const router = express.Router();
+//  Middlewear  //
+router.use(bodyParser.urlencoded({extended: false}));
 
 const Twit = require('twit');
 
@@ -11,39 +15,67 @@ config = config.config;
 const  T = new Twit(
     config
   );
+   // // Get time stampts. // //
+const getTime = timeStamp => {
+    const mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    const dateNow = new Date();
+    const dateCreated = new Date(timeStamp);
+    // console.log(timeStamp, dateCreated);
+    if (typeof timeStamp === "string") {
+        if (dateNow.getUTCMonth()+1 > dateCreated.getUTCMonth()) {
+            if (dateNow.getUTCMonth()+1 === dateCreated.getUTCMonth()+1) {
+                if (dateNow.getUTCDate() <= dateCreated.getUTCDate() +1) {
+                    return dateNow.getUTCHours() - dateCreated.getUTCHours() + 'h'
+
+                } else {
+                    return mS[dateCreated.getUTCMonth()] + ' ' + dateCreated.getUTCDate();
+
+                }
+            } else {
+            return mS[dateCreated.getUTCMonth()] + ' ' + dateCreated.getUTCDate();
+            }
+        } 
+        else {
+            return ' ';
+        }
+    }
+    if (dateNow.getUTCMonth()+1 > dateCreated.getUTCMonth()) {
+        if (dateNow.getUTCMonth()+1 === dateCreated.getUTCMonth()+1) {
+            if (dateNow.getUTCDate() <= dateCreated.getUTCDate() +1) {
+                return dateCreated.getUTCHours() + 'h'
+
+            } else {
+                return mS[dateCreated.getUTCMonth()] + ' ' + dateCreated.getUTCDate();
+
+            }
+        } else {
+        return mS[dateCreated.getUTCMonth()] + ' ' + dateCreated.getUTCDate();
+
+        }
+    } 
+    else {
+        return ' ';
+    }
+};
 
   // Twitter \\  
 router.use((req, res, next) => {
     let arrOuter;
-    // Store reusable data.
-    // const data = {
 
-    // };  
-   
-
-
-
-//   /  Get user's time line, display the 2 most recent tweets.   ///   
-      T.get('statuses/user_timeline', { count: 2 }, function(err, data, response) {
+//   /  Get my time line, display the 5 most recent tweets.   ///   
+      T.get('statuses/user_timeline', { count: 5 }, function(err, data, response) {
         req.timeline = data;
         req.userName = data[0].user.name;
         req.sn = data[0].user.screen_name;
         req.userPhoto = data[0].user.profile_image_url;
         req.message = data.timeline;
-        // req.data = data;
+        req.id = data[0].user.id;
+        req.createdAt = [];
 
-        // console.log(data.timeline);
-        // console.log(data.friendName);
-        // if (!arrOuter) {
-        //     console.log(arrOuter);
-        // }  else {
-        //     setTimeout(1000, e => {
-        //         console.log(arrOuter);
-        //     });
-        // }
-        
-      
-
+        for (let i = 0; i < data.length; i++) {
+            const time = data[i].created_at;
+            req.createdAt.push(getTime(time));
+        }
         // res.render('sandbox', { name: ['Jack', 'Bill']});
 
         // res.render('index', {
@@ -52,7 +84,7 @@ router.use((req, res, next) => {
         next();
     });
   }, (req, res, next) => {
-    T.get('followers/list', { screen_name: 'brandondvancamp' },  function (err, data, response) {
+    T.get('followers/list', { screen_name: `${req.sn}` },  function (err, data, response) {
         let username = data.users;
         const friendData = {};
         let names = [];
@@ -60,31 +92,80 @@ router.use((req, res, next) => {
         req.friendSN = [];
         req.friendPhoto = [];
 
-        console.log(data);
-        for (let i = 0; i < username.length; i++) {
-            let name = username[i];
-            names.push(name.name);
-            isFollowing.push(name.following);
-            // req.isFollowing = username.following;
-            req.friendSN.push(name.screen_name); 
-            req.friendPhoto.push(name.profile_image_url_https); 
-        }
-        req.following = names;
-        // req.followers = data;
-        req.isFollowing = isFollowing;
-        next();
+        // console.log(data);
+        if (err) {
+            console.log(err, 'Something went wrong..');
+            res.render('error', {err } );
+          } else {
+            for (let i = 0; i < username.length; i++) {
+                let name = username[i];
+                names.push(name.name);
+                isFollowing.push(name.following);
+                // req.isFollowing = username.following;
+                req.friendSN.push(name.screen_name); 
+                req.friendPhoto.push(name.profile_image_url_https); 
+            }
+            req.following = names;
+            // req.followers = data;
+            req.isFollowing = isFollowing;
+            next(); 
+          }
     });
+  }, (req, res, next) => {
+      
+//  Get Messages //
+  T.get('direct_messages/events/list', {  }, function (err, data, response) {
+    // console.log(data, 'outer', data.events[0].message_create);
+    if (err) {
+        console.log(err);
+        
+    } else {
+        if (data.events.length >= 0) {
+            const msgs = data.events;
+            req.DM = [];
+            req.DMTimeCreated = [];
+            for (let i = 0; i < msgs.length; i++) {
+                const msg = msgs[i];
+                req.DM.push(msg.message_create.message_data.text);
+                // console.log(msg);
+                const time = new Date(parseInt(msg.created_timestamp));
+                req.DMTimeCreated.push(getTime(time));
+                    // parseInt(msg.created_timestamp)));
+                // req.
+                // console.log(msg.created_timestamp);
+            }
+            
+        } 
+        // else {
+            // req.DM = data.events[0].message_create.message_data.text;
+        // }
+        req.recipientId = data.events[0].message_create.target.recipient_id;
+        // req.DM = data.events[0].message_create.message_data.text;
+        T.get('users/lookup', { user_id: req.recipientId }, function (err, d, response) {
+            // console.log(d[0], 'inner');
+            req.profileRecipientImage = d[0].profile_image_url_https;
+            req.recipientName = d[0].name;
+            next();
+        });
+    } // End else
+     });
   });
+
 
     router.get('/', (req, res, next) => {
         //  Render out our passed date to page.
-        console.log(req.friendPhoto, 'message recived...');
+        // console.log(req.friendPhoto, 'message recived...');
+        isYourMsg = (req.recipientId !== req.id) ? true : false;
         
         res.render('index', {
             timelineContent: req.timeline.map(item => {
                 return item.text;
             }),
-            userTimelineNext: req.timeline[1].text, 
+            createdAt: req.createdAt,
+            DMTimeCreated: req.DMTimeCreated,
+            // req.createdAt.map(item => {
+                // return item.
+            // }), 
             userName: req.userName, 
             userPhoto: req.userPhoto,
             sn: req.sn,
@@ -98,19 +179,28 @@ router.use((req, res, next) => {
             friendPhoto: req.friendPhoto,
             friendSN: req.friendSN,
             isFollowing: req.isFollowing,
-            // .map(item => {
-                // console.log(item);
-                // return item.toString();
-            // }),
-            // isFollowing: req.isFollowing,
-            
-            
-            
+            DM: req.DM,
+            profileRecipientImage: req.profileRecipientImage,
+            recipientName: req.recipientName,
+            // DMTimeCreated: req.DMTimeCreated,
+            recipientId: req.recipientId,
+            isYourMsg,
+            myId: req.id
         });
     });
 
 
-
+router.post('/post', (req, res) => {
+        // console.dir(req.body);
+        T.post('statuses/update', { status: req.body.tweet }, function(err, data, response) {
+           if (err) {
+                console.error(err);
+           } else {
+            // const didPost = true;
+                res.redirect('/');
+           }
+        });
+    });
 
 
 
@@ -119,12 +209,7 @@ router.use((req, res, next) => {
 // ========================================================================
 
 
-  //
-//  tweet 'hello world!'
-//
-// T.post('statuses/update', { status: 'ApI\'s are awsome!!' }, function(err, data, response) {
-    // console.log(data)
-  // });
+
   
 //   //
 //   //  search twitter for all tweets containing the word 'banana' since July 11, 2011
@@ -177,9 +262,9 @@ router.use((req, res, next) => {
 //   })
   
 //   //
-//   // get `funny` twitter users
+//   // get DM's
 //   //
-//   T.get('users/suggestions/:slug', { slug: 'funny' }, function (err, data, response) {
+//   T.get('direct_messages', {  }, function (err, data, response) {
 //     console.log(data)
 //   })
   

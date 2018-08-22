@@ -1,0 +1,5 @@
+include layout
+if err.code === 88
+    h1.error-head=`Dude... Cmon! Chill out on the refreshes, okay?`
+h1.error-head=`!! ${err}, Code: ${err.code}`
+p.error-message=`${err}`

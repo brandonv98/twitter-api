@@ -1,0 +1,23 @@
+block following
+    .grid-33
+     .app--section
+        ul.app--message--list
+           li
+            h3
+                | Conversation with 
+                a=recipientName
+            ul.app--message--conversation
+              each item, i in DM               
+               if isYourMsg
+                li.app--message--me
+                  .app--avatar(style=`background-image: url(${userPhoto})`)
+                    img(src=`${userPhoto}`)
+                  p.app--message--text= item
+                  p.app--message--timestamp=DMTimeCreated[i]
+               else
+                li.app--message
+                  .app--avatar(style=`background-image: url(${profileRecipientImage})`)
+                    img(src=`${profileRecipientImage}`)
+                  p.app--message--text= item
+                  p.app--message--timestamp=DMTimeCreated[i]
+               
