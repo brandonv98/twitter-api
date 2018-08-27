@@ -5,10 +5,10 @@ block following
            li
             h3
                 | Conversation with 
-                a=recipientName
+                a name
             ul.app--message--conversation
               each item, i in DM               
-               if isYourMsg
+               if isYourMsg[i]
                 li.app--message--me
                   .app--avatar(style=`background-image: url(${userPhoto})`)
                     img(src=`${userPhoto}`)
@@ -16,8 +16,8 @@ block following
                   p.app--message--timestamp=DMTimeCreated[i]
                else
                 li.app--message
-                  .app--avatar(style=`background-image: url(${profileRecipientImage})`)
-                    img(src=`${profileRecipientImage}`)
+                  //- .app--avatar(style=`background-image: url(${profileRecipientImage[i]})`)
+                    //- img(src=`${profileRecipientImage[i]}`)
                   p.app--message--text= item
                   p.app--message--timestamp=DMTimeCreated[i]
                
