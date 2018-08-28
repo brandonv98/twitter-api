@@ -5,7 +5,7 @@ block following
            li
             h3
                 | Conversation with 
-                a name
+                a=recipientName
             ul.app--message--conversation
               each item, i in DM               
                if isYourMsg[i]
@@ -16,8 +16,8 @@ block following
                   p.app--message--timestamp=DMTimeCreated[i]
                else
                 li.app--message
-                  //- .app--avatar(style=`background-image: url(${profileRecipientImage[i]})`)
-                    //- img(src=`${profileRecipientImage[i]}`)
+                  .app--avatar(style=`background-image: url(${profileRecipientImage})`)
+                    img(src=`${profileRecipientImage}`)
                   p.app--message--text= item
                   p.app--message--timestamp=DMTimeCreated[i]
                

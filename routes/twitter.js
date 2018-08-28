@@ -116,7 +116,7 @@ router.use((req, res, next) => {
         console.log(err);
         
     } else {
-        if (data.events.length >= 0) {
+        // if (data.events.length >= 0) {
             const msgs = data.events;
             req.DM = [];
             req.DMTimeCreated = [];
@@ -124,62 +124,66 @@ router.use((req, res, next) => {
             req.yourMsg = [];
             // req.profileRecipientImage = [];
             // req.recipientName = [];
+            req.recipient_message_data = [];
+            req.id_to_find = [];
+            req.sender = [];
+            req.DMrecipient = [];
+            // console.log(data);
+            // console.log(data.events[0]);
+
+
+            if (data.events[0].message_create.target.recipient_id === req.id.toString()) {
+                console.log(data.events[0].message_create.sender_id);
+                req.id_to_find.push(data.events[0].message_create.sender_id);
+                
+
+            } else if (data.events[0].message_create.target.sender_id === req.id.toString()) {
+                // req.id_to_find = data.events[0].message_create.target.recipient_id;
+                // console.log('NO');
+
+            }
+
+            // console.log(req.id_to_find[0]);
 
 
             for (let i = 0; i < msgs.length; i++) {
                 const msg = msgs[i];
-                req.DM.push(msg.message_create.message_data.text);
-                const time = new Date(parseInt(msg.created_timestamp));
-                req.DMTimeCreated.push(getTime(time));
-                req.recipient_id_Msg.push(msg.message_create.target.recipient_id);
 
-                (msg.message_create.target.recipient_id === req.id.toString()) ? req.yourMsg.push(true) : req.yourMsg.push(false);
+                if (req.id_to_find[0] === msg.message_create.sender_id) {
 
-                // if (msg.message_create.target.recipient_id === req.id) {
+                    // console.log(msg.message_create.message_data.text);
+
+                    req.DM.push(msg.message_create.message_data.text);
+
+                    const time = new Date(parseInt(msg.created_timestamp));
+                    req.DMTimeCreated.push(getTime(time));
+                    req.recipient_id_Msg.push(msg.message_create.target.recipient_id);
+
+                    (msg.message_create.target.recipient_id === req.id.toString()) ? req.yourMsg.push(true) : req.yourMsg.push(false);
+    
+                }  else if (req.id_to_find[0] === msg.message_create.target.recipient_id) {
                     
-                // }
-                // console.log(msg.message_create.target.recipient_id);
+                    req.DM.push(msg.message_create.message_data.text);
 
+                    // console.log(msg.message_create.message_data.text);
 
-                // T.get('users/lookup', { user_id: parseInt(msg.message_create.target.recipient_id) }, function (err, d, response) {
-                    // console.log(d[0].profile_image_url_https)
-                    // req.profileRecipientImage.push(d[0].profile_image_url_https);
-                    // req.recipientName.push(d[0].name); 
-                    // next();
-                // });
-            }
-            // if (req.profileRecipientImage.length > 3) {
-            //     next();
-            // }
-            
-        } 
+                    const time = new Date(parseInt(msg.created_timestamp));
+                    req.DMTimeCreated.push(getTime(time));
+                    req.recipient_id_Msg.push(msg.message_create.target.recipient_id);
 
-        // req.recipientId = data.events[0].message_create.target.recipient_id;
-        req.profileRecipientImage = [];
-        console.log(req.recipient_id_Msg);
-        for (let index = 0; index < req.recipient_id_Msg.length; index++) {
-            // const element = array[index];
-            //   req.recipient_id_Msg
-              T.get('users/lookup', { user_id: req.recipient_id_Msg }, function (err, d, response) {
-                // req.profileRecipientImage.push(d); 
-                // console.log(d[i]);
-                for (let num = 0; num < d.length; num++) {
-                    const element = d[num];
-                    console.log(element);
+                    (msg.message_create.target.recipient_id === req.id.toString()) ? req.yourMsg.push(true) : req.yourMsg.push(false);
                     
                 }
-                // req.recipientName = d[0].name;
-                // next();
-                
-            });
-            
-        }
-        next();
-        // T.get('users/lookup', { user_id: req.recipientId }, function (err, d, response) {
-            // req.profileRecipientImage = d[0].profile_image_url_https;
-            // req.recipientName = d[0].name;
-            // next();
-        // });
+///////////////
+            }
+        req.profileRecipientImage = [];
+           T.get('users/lookup', { user_id: req.id_to_find }, function (err, d, response) {
+            //    console.log(d[0]);
+            req.profileRecipientImage = d[0].profile_image_url_https;
+            req.recipientName = d[0].name;
+            next();
+        });
+
     } // End else
      });
   });
@@ -187,9 +191,6 @@ router.use((req, res, next) => {
 
     router.get('/', (req, res, next) => {
         //  Render out our passed date to page.
-        
-        console.log(req.profileRecipientImage)
-        // console.log(req.tweetInfo);
         res.render('index', {
             timelineContent: req.timeline.map(item => {
                 return item.text;
