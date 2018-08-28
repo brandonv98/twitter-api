@@ -74,7 +74,8 @@ router.use((req, res, next) => {
             fav: [],
             retweet: []
         };
-        
+        req.userBackground = data[0].user.profile_background_image_url_https;
+
         for (let i = 0; i < data.length; i++) {
             const time = data[i].created_at;
             req.createdAt.push(getTime(time));
@@ -116,21 +117,15 @@ router.use((req, res, next) => {
         console.log(err);
         
     } else {
-        // if (data.events.length >= 0) {
             const msgs = data.events;
             req.DM = [];
             req.DMTimeCreated = [];
             req.recipient_id_Msg = [];
             req.yourMsg = [];
-            // req.profileRecipientImage = [];
-            // req.recipientName = [];
             req.recipient_message_data = [];
             req.id_to_find = [];
             req.sender = [];
             req.DMrecipient = [];
-            // console.log(data);
-            // console.log(data.events[0]);
-
 
             if (data.events[0].message_create.target.recipient_id === req.id.toString()) {
                 console.log(data.events[0].message_create.sender_id);
@@ -138,20 +133,14 @@ router.use((req, res, next) => {
                 
 
             } else if (data.events[0].message_create.target.sender_id === req.id.toString()) {
-                // req.id_to_find = data.events[0].message_create.target.recipient_id;
-                // console.log('NO');
+                req.id_to_find = data.events[0].message_create.target.recipient_id;
 
             }
-
-            // console.log(req.id_to_find[0]);
-
 
             for (let i = 0; i < msgs.length; i++) {
                 const msg = msgs[i];
 
                 if (req.id_to_find[0] === msg.message_create.sender_id) {
-
-                    // console.log(msg.message_create.message_data.text);
 
                     req.DM.push(msg.message_create.message_data.text);
 
@@ -164,8 +153,6 @@ router.use((req, res, next) => {
                 }  else if (req.id_to_find[0] === msg.message_create.target.recipient_id) {
                     
                     req.DM.push(msg.message_create.message_data.text);
-
-                    // console.log(msg.message_create.message_data.text);
 
                     const time = new Date(parseInt(msg.created_timestamp));
                     req.DMTimeCreated.push(getTime(time));
@@ -183,7 +170,6 @@ router.use((req, res, next) => {
             req.recipientName = d[0].name;
             next();
         });
-
     } // End else
      });
   });
@@ -216,7 +202,8 @@ router.use((req, res, next) => {
             tweetInfo: req.tweetInfo,
             recipientId: req.recipientId,
             isYourMsg: req.yourMsg,
-            myId: req.id
+            myId: req.id,
+            userBackground: req.userBackground
         });
     });
 

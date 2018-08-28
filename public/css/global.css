@@ -1450,7 +1450,8 @@ li:only-child .circle--clone--remove {
 
 /* line 2, ../sass/circle/components/_headers.sass */
 .circle--header {
-  background: #1da1f2;
+  /* background: #1da1f2; */
+  /* background-image: url(); */
   padding: 20px 0;
   margin-bottom: 30px;
 }
