@@ -54,6 +54,7 @@ $ git clone https://github.com/brandonv98/twitter-api.git
   Once you have cloned the repo ```$ cd/twitter-api ``` from here type ```$ npm install ``` to install all of the project dependencies.
 ### 3. Step Three
   Once completed run the following command to create our config file where we will put our Twitter API keys. 
+  > Unsure how to obtain Twitter API keys? Sign up here - [Sign up Twitter API keys](https://apps.twitter.com/)
   ```
   $ npm run api-build
   ```
