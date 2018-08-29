@@ -45,20 +45,20 @@ ___
 
 ## Installing
 A step by step series of examples that tell you how to get a development env running  
-1. Step One  
+### 1. Step One  
   In your project root dir ***('./')*** use the following command in your terminal.
 ```
 $ git clone https://github.com/brandonv98/twitter-api.git
 ```
-2. Step Two
+### 2. Step Two
   Once you have cloned the repo ```$ cd/twitter-api ``` from here type ```$ npm install ``` to install all of the project dependencies.
-3. Step Three
+### 3. Step Three
   Once completed run the following command to create our config file where we will put our Twitter API keys. 
   ```
   $ npm run api-build
   ```
   In your root dir open your **config.js** file and past your Twitter API Keys in.
-4. Step Four 
+### 4. Step Four 
   Back in our Terminal run ```npm start``` to start our server on localhost:3000.
 ___
 
