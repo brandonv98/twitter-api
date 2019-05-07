@@ -7,6 +7,7 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 const Twit = require('twit');
 
+// Config api key file location
 let config = require('../config.js');
 // ---------        --------- //
 config = config.config;
